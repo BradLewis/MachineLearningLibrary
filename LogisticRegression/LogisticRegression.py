@@ -1,11 +1,21 @@
 import numpy as np
 
-def logistic_regression():
-    pass
+def logistic_regression(features, preditor, steps, learning_rate):
+    weights = np.zeros(features.shape[1])
+    
+    for step in range(steps):
+        scores = np.dot(features, weights)
+        predictions = logistic_function(scores)
 
-def logistic_function(values):
+        output_error_signal = preditor - predictions
+        gradient = np.dot(features.T, output_error_signal) 
+        weights += learning_rate * gradient
+
+    return weights
+
+def logistic_function(scores):
     # Returns the sigmoid funciton for the given value
-    return 1/ (1 + np.exp(-values))
+    return 1/ (1 + np.exp(-scores))
 
 def log_likelihood(features, weights, predictor):
     # Calculates the log-likelihood
