@@ -23,3 +23,6 @@ if __name__ == '__main__':
                                 np.ones(number_data)))
 
     plot_data(simulated_separableish_features, simulated_labels)
+
+    weights = MachineLearningLibrary.logistic_regression(simulated_separableish_features, simulated_labels, 300000, 5e-5, True)
+    print(weights)
