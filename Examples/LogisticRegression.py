@@ -25,4 +25,8 @@ if __name__ == '__main__':
     plot_data(simulated_separableish_features, simulated_labels)
 
     weights = MachineLearningLibrary.logistic_regression(simulated_separableish_features, simulated_labels, 300000, 5e-5, True)
+    clf = LogisticRegression(fit_intercept=True, C=1e15)
+    clf.fit(simulated_separableish_features, simulated_labels)
+
     print(weights)
+    print(clf.intercept_, clf.coef_)
