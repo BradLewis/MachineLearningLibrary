@@ -2,6 +2,22 @@ import numpy as np
 
 
 def train(w, b, X, Y, numIterations, learningRate):
+    """
+    Trains the model.
+
+    Params:
+        w - the initial weights
+        b - the initial bias
+        X - the training input data
+        Y - the training output data
+        numIterations - number of iterations to train the model with the data
+        learningRate - the learning rate for each iteration
+
+    Returns:
+        params - dict of the final params for the model
+        grads - dict of the final gradients for the model
+        costs - list of the costs updated every 100 iterations
+    """
     costs = []
 
     for i in range(numIterations):
@@ -17,6 +33,19 @@ def train(w, b, X, Y, numIterations, learningRate):
 
 
 def propagate(w, b, X, Y):
+    """
+    Does one forward and backward propogation.
+
+    Params:
+        w - the current weights
+        b - the current bias
+        X - the training input data
+        Y - the training output data
+
+    Returns:
+        grads - dict of the gradients for the propogation
+        cost - the value of the cost function for the propogation
+    """
     m = X.shape[1]
 
     Z = np.dot(w.T, X) + b
@@ -32,6 +61,9 @@ def propagate(w, b, X, Y):
 
 
 def sigmoid(z):
+    """
+    Function to return the sigmoid of the provided value
+    """
     return 1 / (1 + np.exp(-z))
 
 
