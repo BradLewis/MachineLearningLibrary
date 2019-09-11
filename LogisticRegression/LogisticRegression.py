@@ -1,6 +1,24 @@
 import numpy as np
 
 
+def predict(w, b, X):
+    """
+    Params:
+        w - the weights for the model
+        b - the bias for the model
+        X - the inputs to evaluate with the model with size (size, num of inputs)
+
+    Returns:
+        predictions - list of the predictions for all the inputs
+    """
+    m = X.shape[1]
+    w = w.reshape(X.shape[0], 1)
+
+    Z = np.dot(w.T, X) + b
+    predictions = sigmoid(Z)
+    return predictions
+
+
 def train(w, b, X, Y, numIterations, learningRate):
     """
     Trains the model.
