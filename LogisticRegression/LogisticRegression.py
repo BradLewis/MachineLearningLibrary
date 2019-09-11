@@ -11,9 +11,7 @@ def predict(w, b, X):
     Returns:
         predictions - list of the predictions for all the inputs
     """
-    m = X.shape[1]
     w = w.reshape(X.shape[0], 1)
-
     Z = np.dot(w.T, X) + b
     predictions = sigmoid(Z)
     return predictions
