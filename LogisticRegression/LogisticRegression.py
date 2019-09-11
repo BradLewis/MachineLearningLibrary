@@ -1,34 +1,46 @@
 import numpy as np
 
-def logistic_regression(features, predictor, steps, learning_rate, add_intercept):
-    if add_intercept:
-        intercept = np.ones((features.shape[0], 1))
-        features = np.hstack((intercept, features))
 
-    weights = np.zeros(features.shape[1])
-    
-    for step in range(steps):
-        scores = np.dot(features, weights)
-        predictions = logistic_function(scores)
+def train(w, b, X, Y, numIterations, learningRate):
+    costs = []
 
-        output_error_signal = predictor - predictions
-        gradient = np.dot(features.T, output_error_signal) 
-        weights += learning_rate * gradient
+    for i in range(numIterations):
+        grads, cost = propagate(w, b, X, Y)
 
-        if step % 10000 == 0:
-            print(log_likelihood(features, weights, predictor))
+        w = w - learningRate * grads['dw']
+        b = b - learningRate * grads['db']
+        if i % 100 == 0:
+            costs.append(cost)
 
-    return weights
+        params = {"w": w, "b": b}
+        return params, grads, costs
 
-def logistic_function(scores):
-    # Returns the sigmoid funciton for the given value
-    return 1 / (1 + np.exp(-scores))
+
+def propagate(w, b, X, Y):
+    m = X.shape[1]
+
+    Z = np.dot(w.T, X) + b
+    A = sigmoid(Z)
+    cost = -(1/m) * np.sum(Y * np.log(A) + (1 - Y) * np.log(1 - A))
+
+    dw = (1/m) * np.dot(X, (A - Y).T)
+    db = (1/m) * np.sum(A - Y)
+
+    cost = np.squeeze(cost)
+    grads = {"dw": dw, "db": db}
+    return grads, cost
+
+
+def sigmoid(z):
+    return 1 / (1 + np.exp(-z))
+
 
 def log_likelihood(features, weights, predictor):
     # Calculates the log-likelihood
     scores = np.dot(features, weights)
     ll = np.sum(predictor*scores - np.log(1 + np.exp(scores)))
     return ll
+
 
 if __name__ == '__main__':
     pass
