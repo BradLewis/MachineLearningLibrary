@@ -1,20 +1,33 @@
 import numpy as np
 
 
-def sigmoid(z):
-    """
-    Function to return the sigmoid of the provided value
-    """
-    return 1 / (1 + np.exp(-z))
+class ActivationFunction():
+
+    def get(self, z):
+        raise NotImplementedError()
+
+    def getDerivative(self, z):
+        raise NotImplementedError()
 
 
-def tanh(z):
-    return np.tanh(z)
+class Sigmoid(ActivationFunction):
+    def get(self, z):
+        return 1 / (1 + np.exp(-z))
 
 
-def relu(z):
-    return max(0, z)
+class Tanh(ActivationFunction):
+    def get(self, z):
+        return np.tanh(z)
 
 
-def leakyRelu(z, a):
-    return max(a * z, z)
+class Relu(ActivationFunction):
+    def get(self, z):
+        return max(0, z)
+
+
+class LeakyRelu(ActivationFunction):
+    def __init__(self, a):
+        self.a = a
+
+    def get(self, z):
+        return max(self.a * z, z)

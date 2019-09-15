@@ -1,6 +1,6 @@
 import numpy as np
 
-from machineLearningLibrary.activationFunctions import sigmoid, tanh
+from machineLearningLibrary.activationFunctions import Sigmoid, Tanh
 
 
 def initParams(n_x, n_h, n_y):
@@ -70,9 +70,9 @@ def forwardPropagation(X, inParams):
     b2 = inParams.get["b2"]
 
     Z1 = np.dot(W1, X) + b1
-    A1 = tanh(Z1)
+    A1 = Tanh().get(Z1)
     Z2 = np.dot(W2, A1) + b2
-    A2 = sigmoid(Z2)
+    A2 = Sigmoid().get(Z2)
 
     outParams = {
         "Z1": Z1,

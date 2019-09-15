@@ -1,6 +1,6 @@
 import numpy as np
 
-from machineLearningLibrary.activationFunctions import sigmoid
+from machineLearningLibrary.activationFunctions import Sigmoid
 
 
 def predict(w, b, X):
@@ -15,7 +15,7 @@ def predict(w, b, X):
     """
     w = w.reshape(X.shape[0], 1)
     Z = np.dot(w.T, X) + b
-    predictions = sigmoid(Z)
+    predictions = Sigmoid().get(Z)
     return predictions
 
 
@@ -67,7 +67,7 @@ def propagate(w, b, X, Y):
     m = X.shape[1]
 
     Z = np.dot(w.T, X) + b
-    A = sigmoid(Z)
+    A = Sigmoid().get(Z)
     cost = -(1/m) * np.sum(Y * np.log(A) + (1 - Y) * np.log(1 - A))
 
     dw = (1/m) * np.dot(X, (A - Y).T)
