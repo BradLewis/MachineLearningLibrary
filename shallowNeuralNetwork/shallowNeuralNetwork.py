@@ -4,6 +4,19 @@ from machineLearningLibrary.activationFunctions import sigmoid, tanh
 
 
 def initParams(n_x, n_h, n_y):
+    """
+    Initialises the parameters of the NN based on the number of input,
+        output and hidden layers.
+
+    Params:
+        n_x - size of the input layer.
+        n_h - size of the hidden layer.
+        n_h - size of the output layer.
+
+    Returns:
+        params - a dict containing the initialized values for the NN, 
+            W1, W2, b1 and b2.
+    """
     W1 = np.random.randn(n_h, n_x) * 0.01
     b1 = np.zeros((n_h, 1))
     W2 = np.random.randn(n_y, n_h) * 0.01
@@ -19,14 +32,38 @@ def initParams(n_x, n_h, n_y):
 
 
 def cost(A2, Y, inParams):
+    """
+    Calculates the cost for a given output with the expected out.
+
+    Params:
+        A2 - the calculated output.
+        Y - the expecte output.
+        inParams - the params of the NN.
+
+    Returns
+        a float value for the cost.
+    """
     m = Y.shape
-    logprobs = np.multiply(np.log(A2), Y) + np.multiply(np.log(1-A2), 1-Y)
-    cost = - np.sum(logprobs) / m
+    logProb = np.multiply(np.log(A2), Y) + np.multiply(np.log(1-A2), 1-Y)
+    cost = - np.sum(logProb) / m
 
     return float(np.squeeze(cost))
 
 
 def forwardPropagation(X, inParams):
+    """
+    Calculates the output based on the input data and the params
+        of the NN.
+
+    Params:
+        X - the input data.
+        inParams - the params of the NN.
+
+    Returns:
+        A2 - the output of the NN.
+        outParams - a dict containing the calculated params A1, A2,
+            Z1 and Z2 needed for the backward propagation.
+    """
     W1 = inParams.get("W1")
     b1 = inParams.get["b1"]
     W2 = inParams.get["W2"]
@@ -47,6 +84,20 @@ def forwardPropagation(X, inParams):
 
 
 def backwardPropagation(inParams, outParams, X, Y):
+    """
+    Performs backward propagation based on the input and output
+        of the NN.
+
+    Params:
+        inParams - the parameters for the NN, W1, W2, b1, b2.
+        outParams - the calculated output parameters for the run
+            of the NN, A1, A2, Z1, Z2.
+        X - the input data.
+        Y - the expected output data.
+
+    Returns:
+        a dict of the gradients for the inParams, dW1, dW2, db1, db2.
+    """
     m = X.shape
 
     W2 = inParams.get("W2")
@@ -69,6 +120,18 @@ def backwardPropagation(inParams, outParams, X, Y):
 
 
 def updateParams(inParams, gradients, learningRate=1.2):
+    """
+    Updates the parameters of the NN based on the gradients and
+        the learning rate.
+
+    Params:
+        inParams - the parameters of the NN.
+        gradients - the gradients for the parameters of the NN.
+        learningRate - the learning rate for the NN. Defaults 1.2.
+
+    Returns:
+        a dict of the updated values for the NN.
+    """
     W1 = inParams.get("W1")
     W2 = inParams.get("W2")
     b1 = inParams.get("b1")
@@ -94,19 +157,50 @@ def updateParams(inParams, gradients, learningRate=1.2):
     return params
 
 
-def runNeuralNetwork(X, Y, n_h, numIterations=10000, print_cost=False):
+def train(X, Y, n_h, numIterations=10000, printCost=False):
+    """
+    Trains a shallow NN.
+
+    Params:
+        X - the training input data.
+        Y - the expected output for the input data X.
+        n_h - the number of nodes in the hidden layer.
+        numIterations - number of iterations to train the NN.
+            Defaults 10000.
+        printCost - whether to print updates for the cost function
+            every 1000 iterations. Defaults False.
+
+    Returns:
+        a dict of the params W1, W2, b1, b2 for the trained NN.
+    """
     n_x = X.shape[0]
     n_y = Y.shape[0]
 
-    parameters = initParams(n_x, n_h, n_y)
+    params = initParams(n_x, n_h, n_y)
 
     for i in range(0, numIterations):
-        A2, cache = forwardPropagation(X, parameters)
-        cost = cost(A2, Y, parameters)
-        grads = backwardPropagation(parameters, cache, X, Y)
-        parameters = updateParams(parameters, grads)
+        A2, cache = forwardPropagation(X, params)
+        cost = cost(A2, Y, params)
+        grads = backwardPropagation(params, cache, X, Y)
+        params = updateParams(params, grads)
 
-        if print_cost and i % 1000 == 0:
+        if printCost and i % 1000 == 0:
             print("Cost after iteration %i: %f" % (i, cost))
 
-    return parameters
+    return params
+
+
+def predict(X, params):
+    """
+    Convience method for calculating the output of the NN for a
+        given input.
+
+    Params:
+        X - the input data.
+        params - the params of the NN, W1, W2, b1, b2.
+
+    Returns:
+        the predicted value A2 for X.
+    """
+    A2, _ = forwardPropagation(X, params)
+    return A2
