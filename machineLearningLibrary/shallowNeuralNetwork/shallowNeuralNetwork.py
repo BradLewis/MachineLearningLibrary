@@ -3,6 +3,18 @@ import numpy as np
 from machineLearningLibrary.activationFunctions import Sigmoid, Tanh
 
 
+class CostFunction():
+    @staticmethod
+    def get(A2, Y):
+        m = Y.shape
+        logProb = np.multiply(np.log(A2), Y) + np.multiply(np.log(1-A2), 1-Y)
+        return - np.sum(logProb) / m
+
+    @staticmethod
+    def getDerivative(A2, Y):
+        return - (Y / A2) + (1 - Y) / (1 - A2)
+
+
 def initParams(n_x, n_h, n_y):
     """
     Initialises the parameters of the NN based on the number of input,
@@ -31,21 +43,17 @@ def initParams(n_x, n_h, n_y):
     return params
 
 
-def cost(A2, Y, inParams):
+def cost(A2, Y):
     """
     Calculates the cost for a given output with the expected out.
 
     Params:
         A2 - the calculated output.
         Y - the expecte output.
-        inParams - the params of the NN.
 
     Returns
         a float value for the cost.
     """
-    m = Y.shape
-    logProb = np.multiply(np.log(A2), Y) + np.multiply(np.log(1-A2), 1-Y)
-    cost = - np.sum(logProb) / m
 
     return float(np.squeeze(cost))
 
@@ -83,7 +91,9 @@ def forwardPropagation(X, inParams):
     return A2, outParams
 
 
-def backwardPropagation(inParams, outParams, X, Y):
+def backwardPropagation(inParams, outParams, X, Y,
+                        hiddenLayerAct=None,
+                        finalLayerAct=None):
     """
     Performs backward propagation based on the input and output
         of the NN.
@@ -94,20 +104,29 @@ def backwardPropagation(inParams, outParams, X, Y):
             of the NN, A1, A2, Z1, Z2.
         X - the input data.
         Y - the expected output data.
+        hiddenLayerAct - the activation function for the hidden layer. If
+            None, it will default to the Tanh function. Defaults None.
+        finalLayerAct - the activation function for the final output layer.
+            If None, it will default to the Sigmoid function. Defaults None.
 
     Returns:
         a dict of the gradients for the inParams, dW1, dW2, db1, db2.
     """
+    if hiddenLayerAct is None:
+        hiddenLayerAct = Tanh()
+    if finalLayerAct is None:
+        finalLayerAct = Sigmoid()
+
     m = X.shape
 
     W2 = inParams.get("W2")
     A1 = outParams.get("A1")
     A2 = outParams.get("A2")
 
-    dZ2 = A2 - Y
+    dZ2 = CostFunction.getDerivative(A2, Y) * finalLayerAct.getDerivative(A2)
     dW2 = (1/m) * np.dot(dZ2, A1.T)
     db2 = (1/m) * np.sum(dZ2, axis=1, keepdims=True)
-    dZ1 = np.dot(W2.T, dZ2) * (1 - np.power(A1, 2))
+    dZ1 = np.dot(W2.T, dZ2) * hiddenLayerAct.getDerivative(A1)
     dW1 = (1/m) * np.dot(dZ1, X.T)
     db1 = (1/m) * np.sum(dZ1, axis=1, keepdims=True)
 
@@ -180,7 +199,7 @@ def train(X, Y, n_h, numIterations=10000, printCost=False):
 
     for i in range(0, numIterations):
         A2, cache = forwardPropagation(X, params)
-        cost = cost(A2, Y, params)
+        cost = cost(A2, Y)
         grads = backwardPropagation(params, cache, X, Y)
         params = updateParams(params, grads)
 
