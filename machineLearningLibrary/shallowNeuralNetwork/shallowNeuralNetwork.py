@@ -1,18 +1,7 @@
 import numpy as np
 
 from machineLearningLibrary.activationFunctions import Sigmoid, Tanh
-
-
-class CostFunction():
-    @staticmethod
-    def get(A2, Y):
-        m = Y.shape
-        logProb = np.multiply(np.log(A2), Y) + np.multiply(np.log(1-A2), 1-Y)
-        return - np.sum(logProb) / m
-
-    @staticmethod
-    def getDerivative(A2, Y):
-        return - (Y / A2) + (1 - Y) / (1 - A2)
+from machineLearningLibrary.costFunctions import LogCost
 
 
 def initParams(n_x, n_h, n_y):
@@ -54,7 +43,7 @@ def cost(A2, Y):
     Returns
         a float value for the cost.
     """
-
+    cost = LogCost.get(A2, Y)
     return float(np.squeeze(cost))
 
 
@@ -123,7 +112,7 @@ def backwardPropagation(inParams, outParams, X, Y,
     A1 = outParams.get("A1")
     A2 = outParams.get("A2")
 
-    dZ2 = CostFunction.getDerivative(A2, Y) * finalLayerAct.getDerivative(A2)
+    dZ2 = LogCost.getDerivative(A2, Y) * finalLayerAct.getDerivative(A2)
     dW2 = (1/m) * np.dot(dZ2, A1.T)
     db2 = (1/m) * np.sum(dZ2, axis=1, keepdims=True)
     dZ1 = np.dot(W2.T, dZ2) * hiddenLayerAct.getDerivative(A1)

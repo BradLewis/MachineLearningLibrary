@@ -2,7 +2,6 @@ import numpy as np
 
 
 class ActivationFunction():
-
     def get(self, z):
         raise NotImplementedError()
 
