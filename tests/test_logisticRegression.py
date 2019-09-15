@@ -1,4 +1,4 @@
-from machineLearningLibrary.logisticRegression.logisticRegression import sigmoid
+from machineLearningLibrary.activationFunctions import sigmoid
 
 
 def test_sigmoid():

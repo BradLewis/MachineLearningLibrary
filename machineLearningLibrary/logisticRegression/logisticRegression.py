@@ -1,5 +1,7 @@
 import numpy as np
 
+from machineLearningLibrary.activationFunctions import sigmoid
+
 
 def predict(w, b, X):
     """
@@ -74,13 +76,6 @@ def propagate(w, b, X, Y):
     cost = np.squeeze(cost)
     grads = {"dw": dw, "db": db}
     return grads, cost
-
-
-def sigmoid(z):
-    """
-    Function to return the sigmoid of the provided value
-    """
-    return 1 / (1 + np.exp(-z))
 
 
 def log_likelihood(features, weights, predictor):
