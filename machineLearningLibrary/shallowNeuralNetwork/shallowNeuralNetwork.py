@@ -43,8 +43,7 @@ def cost(A2, Y):
     Returns
         a float value for the cost.
     """
-    cost = LogCost.get(A2, Y)
-    return float(np.squeeze(cost))
+    return float(np.squeeze(LogCost.get(A2, Y)))
 
 
 def forwardPropagation(X, inParams):
