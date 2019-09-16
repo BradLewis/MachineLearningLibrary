@@ -54,7 +54,7 @@ def modelForward(X, params, activations):
     return A, caches
 
 
-def cost(AL, Y):
+def computeCost(AL, Y):
     return float(np.squeeze(LogCost.get(AL, Y)))
 
 
@@ -81,7 +81,6 @@ def linearBackwardActivation(dA, cache, activation):
 def modelBackward(AL, Y, caches, activations):
     grads = dict()
     L = len(caches)
-    m = AL.shape[1]
     Y = Y.reshape(AL.shape)
 
     dAL = LogCost.getDerivative(AL, Y)
@@ -114,3 +113,28 @@ def updateParams(params, grads, learningRate):
                              learningRate * grads[f"dW{l+1}"])
         params[f"b{l+1}"] = (params[f"b{l+1}"] -
                              learningRate * grads[f"db{l+1}"])
+    return params
+
+
+def train(X, Y, layerDims, activations,
+          learningRate=0.01, numIterations=1000, printCost=False):
+    costs = []
+    params = initParams(layerDims)
+
+    for i in range(0, numIterations):
+        AL, caches = modelForward(X, params, activations)
+        cost = computeCost(AL, Y)
+        grads = modelBackward(AL, Y, caches, activations)
+        params = updateParams(params, grads, learningRate)
+
+        if printCost and i % 100 == 0:
+            print("Cost after iteration %i: %f" % (i, cost))
+        if printCost and i % 100 == 0:
+            costs.append(cost)
+
+    return params
+
+
+def predict(X, params, activations):
+    AL, _ = modelForward(X, params, activations)
+    return AL
